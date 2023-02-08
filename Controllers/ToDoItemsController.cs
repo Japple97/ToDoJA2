@@ -107,6 +107,8 @@ namespace ToDoJA2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,AppUserId,DateCreated,DueDate,IsCompleted")] ToDoItems toDoItems)
         {
+            ModelState.Remove("AppUserId");
+            
             if (id != toDoItems.Id)
             {
                 return NotFound();
@@ -116,10 +118,11 @@ namespace ToDoJA2.Controllers
             {
                 try
                 {
+                    toDoItems.AppUserId = _userManager.GetUserId(User);
 
                     toDoItems.DateCreated = DateTime.SpecifyKind(toDoItems.DateCreated, DateTimeKind.Utc);
                     toDoItems.DueDate = DateTime.SpecifyKind(toDoItems.DueDate, DateTimeKind.Utc);
-               
+                    
 
                     _context.Update(toDoItems);
                     await _context.SaveChangesAsync();
