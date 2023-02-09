@@ -28,11 +28,30 @@ namespace ToDoJA2.Controllers
         public async Task<IActionResult> Index()
         {
             string userId = _userManager.GetUserId(User)!;
+
+            
+
             List<ToDoItems> toDoItems= new List<ToDoItems>();
-            toDoItems = await _context.ToDoItems.Where(c=>c.AppUserId == userId).Include(c=>c.AppUser).ToListAsync();
+
+            
+
+            toDoItems = await _context.ToDoItems.Where(c=>c.AppUserId == userId && c.IsCompleted == false).Include(c=>c.AppUser).ToListAsync();
 
             return View(toDoItems);
         }
+
+        //GEt Completed Items
+        public async Task<IActionResult> CompletedItems()
+        {
+            string userId = _userManager.GetUserId(User)!;
+
+            List<ToDoItems> toDoItems= new List<ToDoItems>();
+
+            toDoItems = await _context.ToDoItems.Where(c => c.AppUserId == userId && c.IsCompleted == true).Include(c => c.AppUser).ToListAsync();
+
+            return View(toDoItems);
+        }
+
 
         // GET: ToDoItems/Details/5
         public async Task<IActionResult> Details(int? id)
